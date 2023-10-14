@@ -12,11 +12,11 @@ import (
 func registerCommonAuthenticationServerProtocols() {
 	ticketGrantingProtocol := ticket_granting.NewCommonTicketGrantingProtocol(globals.AuthenticationServer)
 
-	port, _ := strconv.Atoi(os.Getenv("PN_TFH_SECURE_SERVER_HOST"))
+	port, _ := strconv.Atoi(os.Getenv("PN_TFH_SECURE_SERVER_PORT"))
 
 	secureStationURL := nex.NewStationURL("")
 	secureStationURL.SetScheme("prudps")
-	secureStationURL.SetAddress(os.Getenv("PN_TFH_SECURE_SERVER_PORT"))
+	secureStationURL.SetAddress(os.Getenv("PN_TFH_SECURE_SERVER_HOST"))
 	secureStationURL.SetPort(uint32(port))
 	secureStationURL.SetCID(1)
 	secureStationURL.SetPID(2)
