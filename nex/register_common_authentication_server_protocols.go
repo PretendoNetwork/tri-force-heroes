@@ -16,7 +16,7 @@ func registerCommonAuthenticationServerProtocols() {
 
 	secureStationURL := nex.NewStationURL("")
 	secureStationURL.SetScheme("prudps")
-	secureStationURL.SetAddress(os.Getenv("PN_TFH_SECURE_SERVER_HOST"))
+	secureStationURL.SetAddress(os.Getenv("PN_TFH_SECURE_SERVER_PORT"))
 	secureStationURL.SetPort(uint32(port))
 	secureStationURL.SetCID(1)
 	secureStationURL.SetPID(2)
