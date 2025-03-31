@@ -24,7 +24,7 @@ func init() {
 
 	var err error
 
-	err = godotenv.Load(".env")
+	err = godotenv.Load()
 	if err != nil {
 		globals.Logger.Warning("Error loading .env file")
 	}

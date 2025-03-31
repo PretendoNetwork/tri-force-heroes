@@ -12,6 +12,7 @@ import (
 func StartSecureServer() {
 	globals.SecureServer = nex.NewPRUDPServer()
 	globals.SecureEndpoint = nex.NewPRUDPEndPoint(1)
+	globals.SecureServer.ByteStreamSettings.UseStructureHeader = true
 
 	globals.SecureEndpoint.IsSecureEndPoint = true
 	globals.SecureEndpoint.ServerAccount = globals.SecureServerAccount

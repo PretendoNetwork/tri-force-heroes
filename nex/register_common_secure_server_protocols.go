@@ -16,32 +16,32 @@ import (
 	common_utility "github.com/PretendoNetwork/nex-protocols-common-go/v2/utility"
 	match_making "github.com/PretendoNetwork/nex-protocols-go/v2/match-making"
 	match_making_ext "github.com/PretendoNetwork/nex-protocols-go/v2/match-making-ext"
-	mm_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension"
 	nat_traversal "github.com/PretendoNetwork/nex-protocols-go/v2/nat-traversal"
 	secure "github.com/PretendoNetwork/nex-protocols-go/v2/secure-connection"
 	utility "github.com/PretendoNetwork/nex-protocols-go/v2/utility"
 	"github.com/PretendoNetwork/tri-force-heroes/database"
-	local_globals "github.com/PretendoNetwork/tri-force-heroes/globals"
+	"github.com/PretendoNetwork/tri-force-heroes/globals"
 )
 
-func cleanupSearchMatchmakeSessionHandler(matchmakeSession *mm_types.MatchmakeSession) {
+func cleanupSearchMatchmakeSessionHandler(matchmakeSession *match_making_types.MatchmakeSession) {
 	// matchmakeSession.Attributes[2] = 0
-	matchmakeSession.MatchmakeParam = mm_types.NewMatchmakeParam()
+	matchmakeSession.MatchmakeParam = match_making_types.NewMatchmakeParam()
 	// matchmakeSession.ApplicationData = make([]byte, 0)
 	fmt.Println(matchmakeSession.String())
 }
 
 func stubGetPlayingSession(err error, packet nex.PacketInterface, callID uint32, _ types.List[types.PID]) (*nex.RMCMessage, *nex.Error) {
 	if err != nil {
-		local_globals.Logger.Error(err.Error())
+		globals.Logger.Error(err.Error())
 		return nil, nex.NewError(nex.ResultCodes.Core.InvalidArgument, "change_error")
 	}
 
 	connection := packet.Sender().(*nex.PRUDPConnection)
 	endpoint := connection.Endpoint().(*nex.PRUDPEndPoint)
 
-	lstPlayingSession := types.NewList[*mm_types.PlayingSession]()
+	lstPlayingSession := types.NewList[match_making_types.PlayingSession]()
 
 	rmcResponseStream := nex.NewByteStreamOut(endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
@@ -62,7 +62,7 @@ func generateNEXUniqueIDHandler() uint64 {
 
 	err := binary.Read(rand.Reader, binary.BigEndian, &uniqueID)
 	if err != nil {
-		local_globals.Logger.Error(err.Error())
+		globals.Logger.Error(err.Error())
 	}
 
 	return uniqueID
@@ -70,36 +70,36 @@ func generateNEXUniqueIDHandler() uint64 {
 
 func registerCommonSecureServerProtocols() {
 	secureProtocol := secure.NewProtocol()
-	local_globals.SecureEndpoint.RegisterServiceProtocol(secureProtocol)
-	secure := common_secure.NewCommonProtocol(secureProtocol)
-	secure.CreateReportDBRecord = func(pid types.PID, reportID types.UInt32, reportData types.QBuffer) error {
+	globals.SecureEndpoint.RegisterServiceProtocol(secureProtocol)
+	commonSecureProtocol := common_secure.NewCommonProtocol(secureProtocol)
+	commonSecureProtocol.CreateReportDBRecord = func(pid types.PID, reportID types.UInt32, reportData types.QBuffer) error {
 		return nil
 	}
 
-	matchmakingManager := common_globals.NewMatchmakingManager(local_globals.SecureEndpoint, database.Postgres)
+	matchmakingManager := common_globals.NewMatchmakingManager(globals.SecureEndpoint, database.Postgres)
 
 	natTraversalProtocol := nat_traversal.NewProtocol()
-	local_globals.SecureEndpoint.RegisterServiceProtocol(natTraversalProtocol)
+	globals.SecureEndpoint.RegisterServiceProtocol(natTraversalProtocol)
 	common_nat_traversal.NewCommonProtocol(natTraversalProtocol)
 
 	matchMakingProtocol := match_making.NewProtocol()
-	local_globals.SecureEndpoint.RegisterServiceProtocol(matchMakingProtocol)
+	globals.SecureEndpoint.RegisterServiceProtocol(matchMakingProtocol)
 	commonMatchMakingProtocol := common_match_making.NewCommonProtocol(matchMakingProtocol)
 	commonMatchMakingProtocol.SetManager(matchmakingManager)
 
 	utilityProtocol := utility.NewProtocol()
-	local_globals.SecureEndpoint.RegisterServiceProtocol(utilityProtocol)
+	globals.SecureEndpoint.RegisterServiceProtocol(utilityProtocol)
 	commonUtilityProtocol := common_utility.NewCommonProtocol(utilityProtocol)
 	commonUtilityProtocol.GenerateNEXUniqueID = generateNEXUniqueIDHandler
 
 	matchMakingExtProtocol := match_making_ext.NewProtocol()
-	local_globals.SecureEndpoint.RegisterServiceProtocol(matchMakingExtProtocol)
+	globals.SecureEndpoint.RegisterServiceProtocol(matchMakingExtProtocol)
 	commonMatchMakingExtProtocol := common_match_making_ext.NewCommonProtocol(matchMakingExtProtocol)
 	commonMatchMakingExtProtocol.SetManager(matchmakingManager)
 
 	matchmakeExtensionProtocol := matchmake_extension.NewProtocol()
 	matchmakeExtensionProtocol.SetHandlerGetPlayingSession(stubGetPlayingSession)
-	local_globals.SecureEndpoint.RegisterServiceProtocol(matchmakeExtensionProtocol)
+	globals.SecureEndpoint.RegisterServiceProtocol(matchmakeExtensionProtocol)
 	commonMatchmakeExtensionProtocol := common_matchmake_extension.NewCommonProtocol(matchmakeExtensionProtocol)
 	commonMatchmakeExtensionProtocol.SetManager(matchmakingManager)
 

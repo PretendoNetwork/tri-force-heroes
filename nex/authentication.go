@@ -13,8 +13,7 @@ var serverBuildString string
 
 func StartAuthenticationServer() {
 	globals.AuthenticationServer = nex.NewPRUDPServer()
-	//globals.AuthenticationServer.SetDefaultNEXVersion(nex.NewNEXVersion(3,9,0))
-	//globals.AuthenticationServer.SetAccessKey("c1621b84")
+	globals.AuthenticationServer.ByteStreamSettings.UseStructureHeader = true
 
 	globals.AuthenticationEndpoint.ServerAccount = globals.AuthenticationServerAccount
 	globals.AuthenticationEndpoint.AccountDetailsByPID = globals.AccountDetailsByPID
