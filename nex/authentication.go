@@ -13,6 +13,7 @@ var serverBuildString string
 
 func StartAuthenticationServer() {
 	globals.AuthenticationServer = nex.NewPRUDPServer()
+	globals.AuthenticationEndpoint = nex.NewPRUDPEndPoint(1)
 	globals.AuthenticationServer.ByteStreamSettings.UseStructureHeader = true
 
 	globals.AuthenticationEndpoint.ServerAccount = globals.AuthenticationServerAccount
