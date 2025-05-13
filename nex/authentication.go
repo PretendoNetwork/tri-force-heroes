@@ -3,31 +3,37 @@ package nex
 import (
 	"fmt"
 	"os"
+	"strconv"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/tri-force-heroes/globals"
 )
 
 var serverBuildString string
 
 func StartAuthenticationServer() {
-	globals.AuthenticationServer = nex.NewServer()
-	globals.AuthenticationServer.SetPRUDPVersion(1)
-	globals.AuthenticationServer.SetPRUDPProtocolMinorVersion(2)
-	globals.AuthenticationServer.SetDefaultNEXVersion(nex.NewNEXVersion(3,9,0))
-	globals.AuthenticationServer.SetKerberosPassword(globals.KerberosPassword)
-	globals.AuthenticationServer.SetAccessKey("c1621b84")
+	globals.AuthenticationServer = nex.NewPRUDPServer()
+	globals.AuthenticationServer.ByteStreamSettings.UseStructureHeader = true
 
-	globals.AuthenticationServer.On("Data", func(packet *nex.PacketV1) {
-		request := packet.RMCRequest()
+	globals.AuthenticationEndpoint.ServerAccount = globals.AuthenticationServerAccount
+	globals.AuthenticationEndpoint.AccountDetailsByPID = globals.AccountDetailsByPID
+	globals.AuthenticationEndpoint.AccountDetailsByUsername = globals.AccountDetailsByUsername
+	globals.AuthenticationServer.BindPRUDPEndPoint(globals.AuthenticationEndpoint)
 
-		fmt.Println("==Tri-Force Heroes - Auth==")
-		fmt.Printf("Protocol ID: %#v\n", request.ProtocolID())
-		fmt.Printf("Method ID: %#v\n", request.MethodID())
-		fmt.Println("===============")
+	globals.AuthenticationServer.LibraryVersions.SetDefault(nex.NewLibraryVersion(3, 9, 0))
+	globals.AuthenticationServer.AccessKey = "c1621b84"
+
+	globals.AuthenticationEndpoint.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
+
+		fmt.Println("=== Tri-Force Heroes - Auth ===")
+		fmt.Printf("Protocol ID: %d\n", request.ProtocolID)
+		fmt.Printf("Method ID: %d\n", request.MethodID)
+		fmt.Println("==================")
 	})
 
 	registerCommonAuthenticationServerProtocols()
 
-	globals.AuthenticationServer.Listen(fmt.Sprintf(":%s", os.Getenv("PN_TFH_AUTHENTICATION_SERVER_PORT")))
+	port, _ := strconv.Atoi(os.Getenv("PN_TFH_AUTHENTICATION_SERVER_PORT"))
+	globals.AuthenticationServer.Listen(port)
 }
