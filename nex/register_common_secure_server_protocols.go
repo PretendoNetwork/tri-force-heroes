@@ -25,6 +25,9 @@ import (
 	"github.com/PretendoNetwork/tri-force-heroes/globals"
 )
 
+func cleanupMatchmakeSessionSearchCriterias(searchCriterias types.List[match_making_types.MatchmakeSessionSearchCriteria]) {
+}
+
 func cleanupSearchMatchmakeSessionHandler(matchmakeSession *match_making_types.MatchmakeSession) {
 	// matchmakeSession.Attributes[2] = 0
 	matchmakeSession.MatchmakeParam = match_making_types.NewMatchmakeParam()
@@ -75,6 +78,7 @@ func registerCommonSecureServerProtocols() {
 	commonSecureProtocol.CreateReportDBRecord = func(pid types.PID, reportID types.UInt32, reportData types.QBuffer) error {
 		return nil
 	}
+	commonSecureProtocol.EnableInsecureRegister()
 
 	matchmakingManager := common_globals.NewMatchmakingManager(globals.SecureEndpoint, database.Postgres)
 
@@ -104,4 +108,5 @@ func registerCommonSecureServerProtocols() {
 	commonMatchmakeExtensionProtocol.SetManager(matchmakingManager)
 
 	commonMatchmakeExtensionProtocol.CleanupSearchMatchmakeSession = cleanupSearchMatchmakeSessionHandler
+	commonMatchmakeExtensionProtocol.CleanupMatchmakeSessionSearchCriterias = cleanupMatchmakeSessionSearchCriterias
 }
