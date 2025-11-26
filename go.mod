@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.7
 
 require (
-	github.com/PretendoNetwork/grpc-go v1.0.2
+	github.com/PretendoNetwork/grpc/go v0.0.0-20251109203325-f275c9f52324
 	github.com/PretendoNetwork/nex-go/v2 v2.1.4
 	github.com/PretendoNetwork/nex-protocols-common-go/v2 v2.4.0
 	github.com/PretendoNetwork/nex-protocols-go/v2 v2.2.1
@@ -19,7 +19,6 @@ require (
 	github.com/PretendoNetwork/pq-extended v1.0.0 // indirect
 	github.com/dolthub/maphash v0.1.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/jwalton/go-supportscolor v1.2.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/lxzan/gws v1.8.9 // indirect
