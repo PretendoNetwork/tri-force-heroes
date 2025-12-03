@@ -81,6 +81,7 @@ func registerCommonSecureServerProtocols() {
 	commonSecureProtocol.EnableInsecureRegister()
 
 	matchmakingManager := common_globals.NewMatchmakingManager(globals.SecureEndpoint, database.Postgres)
+	matchmakingManager.GetUserFriendPIDs = globals.GetUserFriendPIDs
 
 	natTraversalProtocol := nat_traversal.NewProtocol()
 	globals.SecureEndpoint.RegisterServiceProtocol(natTraversalProtocol)
