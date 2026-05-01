@@ -54,7 +54,7 @@ func stubGetPlayingSession(err error, packet nex.PacketInterface, callID uint32,
 
 	rmcResponse := nex.NewRMCSuccess(endpoint, rmcResponseBody)
 	rmcResponse.ProtocolID = matchmake_extension.ProtocolID
-	rmcResponse.MethodID = matchmake_extension.MethodGetSimplePlayingSession
+	rmcResponse.MethodID = matchmake_extension.MethodGetPlayingSession
 	rmcResponse.CallID = callID
 
 	return rmcResponse, nil
