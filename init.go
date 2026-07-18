@@ -40,6 +40,7 @@ func init() {
 	friendsGRPCHost := os.Getenv("PN_TFH_FRIENDS_GRPC_HOST")
 	friendsGRPCPort := os.Getenv("PN_TFH_FRIENDS_GRPC_PORT")
 	friendsGRPCAPIKey := os.Getenv("PN_TFH_FRIENDS_GRPC_API_KEY")
+	healthCheckPort := os.Getenv("PN_TFH_HEALTH_CHECK_PORT")
 
 	if strings.TrimSpace(postgresURI) == "" {
 		globals.Logger.Error("PN_TFH_POSTGRES_URI environment variable not set")
@@ -156,4 +157,16 @@ func init() {
 	)
 
 	database.ConnectPostgres()
+
+	if strings.TrimSpace(healthCheckPort) == "" {
+		globals.Logger.Warning("Basic UDP health check will not be enabled. PN_TFH_HEALTH_CHECK_PORT environment variable not set")
+	} else if port, err := strconv.Atoi(healthCheckPort); err != nil {
+		globals.Logger.Errorf("PN_TFH_HEALTH_CHECK_PORT is not a valid port. Expected 0-65535, got %s", healthCheckPort)
+		os.Exit(0)
+	} else if port < 0 || port > 65535 {
+		globals.Logger.Errorf("PN_TFH_HEALTH_CHECK_PORT is not a valid port. Expected 0-65535, got %s", healthCheckPort)
+		os.Exit(0)
+	} else {
+		nex.EnableBasicUDPHealthCheck(port)
+	}
 }
