@@ -25,5 +25,3 @@ var GRPCAccountCommonMetadata metadata.MD
 var GRPCFriendsClientConnection *grpc.ClientConn
 var GRPCFriendsClient pbfriends.FriendsClient
 var GRPCFriendsCommonMetadata metadata.MD
-
-var AESKey []byte

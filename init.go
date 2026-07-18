@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"strconv"
@@ -31,7 +30,6 @@ func init() {
 		globals.Logger.Warning("Error loading .env file")
 	}
 
-	aesKey := os.Getenv("PN_TFH_AES_KEY")
 	postgresURI := os.Getenv("PN_TFH_POSTGRES_URI")
 	authenticationServerPort := os.Getenv("PN_TFH_AUTHENTICATION_SERVER_PORT")
 	secureServerHost := os.Getenv("PN_TFH_SECURE_SERVER_HOST")
@@ -57,19 +55,8 @@ func init() {
 
 	globals.KerberosPassword = string(kerberosPassword)
 
-	globals.AuthenticationServerAccount = nex.NewAccount(types.NewPID(1), "Quazal Authentication", globals.KerberosPassword)
-	globals.SecureServerAccount = nex.NewAccount(types.NewPID(2), "Quazal Rendez-Vous", globals.KerberosPassword)
-
-	if strings.TrimSpace(aesKey) == "" {
-		globals.Logger.Error("PN_TFH_AES_KEY environment variable not set")
-		os.Exit(0)
-	} else {
-		globals.AESKey, err = hex.DecodeString(aesKey)
-		if err != nil {
-			globals.Logger.Criticalf("Failed to decode AES key: %v", err)
-			os.Exit(0)
-		}
-	}
+	globals.AuthenticationServerAccount = nex.NewAccount(types.NewPID(1), "Quazal Authentication", globals.KerberosPassword, false)
+	globals.SecureServerAccount = nex.NewAccount(types.NewPID(2), "Quazal Rendez-Vous", globals.KerberosPassword, false)
 
 	if strings.TrimSpace(authenticationServerPort) == "" {
 		globals.Logger.Error("PN_TFH_AUTHENTICATION_SERVER_PORT environment variable not set")

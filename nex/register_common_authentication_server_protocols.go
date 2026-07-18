@@ -15,7 +15,8 @@ func registerCommonAuthenticationServerProtocols() {
 	ticketGrantingProtocol := ticket_granting.NewProtocol()
 	globals.AuthenticationEndpoint.RegisterServiceProtocol(ticketGrantingProtocol)
 	commonTicketGrantingProtocol := common_ticket_granting.NewCommonProtocol(ticketGrantingProtocol)
-	commonTicketGrantingProtocol.SetPretendoValidation(globals.AESKey)
+	// TODO re-enable once updated to use Common Utility
+	// commonTicketGrantingProtocol.SetPretendoValidation(globals.AESKey)
 
 	port, _ := strconv.Atoi(os.Getenv("PN_TFH_SECURE_SERVER_PORT"))
 
