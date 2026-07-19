@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/constants"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	common_ticket_granting "github.com/PretendoNetwork/nex-protocols-common-go/v2/ticket-granting"
@@ -15,8 +16,10 @@ func registerCommonAuthenticationServerProtocols() {
 	ticketGrantingProtocol := ticket_granting.NewProtocol()
 	globals.AuthenticationEndpoint.RegisterServiceProtocol(ticketGrantingProtocol)
 	commonTicketGrantingProtocol := common_ticket_granting.NewCommonProtocol(ticketGrantingProtocol)
-	// TODO re-enable once updated to use Common Utility
-	// commonTicketGrantingProtocol.SetPretendoValidation(globals.AESKey)
+	// HACK: replace with ConfigurePNValidation once migration path for Common Utility is worked out
+	commonTicketGrantingProtocol.ValidateLoginData = func(pid types.PID, loginData types.DataHolder) *nex.Error {
+		return nil
+	}
 
 	port, _ := strconv.Atoi(os.Getenv("PN_TFH_SECURE_SERVER_PORT"))
 
