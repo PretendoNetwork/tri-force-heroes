@@ -43,7 +43,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=edge,enable=${{ github.ref == 'refs/heads/dev' }}
             type=sha
 
@@ -86,7 +86,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest-arm,enable=${{ github.ref == 'refs/heads/master' }}
+            type=raw,value=latest-arm,enable=${{ github.ref == 'refs/heads/main' }}
             type=raw,value=edge-arm,enable=${{ github.ref == 'refs/heads/dev' }}
             type=sha,suffix=-arm
 
